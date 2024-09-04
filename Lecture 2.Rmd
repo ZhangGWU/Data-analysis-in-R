@@ -19,8 +19,9 @@ getwd() # where does R save/retrieve files?
 dir() # What files are there ?
 setwd("/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R") # Set another place to save/retrieve files
 ls() # What is in the current environment ?
+# install.packages("ggplot2")
 library(ggplot2) ### load a package ###
-save.image("Your.RData")
+save.image("lecture2.RData")
 ?plot # Open the help file for function
 ??ddply  # Search for a term across
 ```
@@ -70,7 +71,7 @@ v1<-2
 
 ```{r}
 v1<-c(1,3,5,-2) ### numeric vector
-v2 <- c ("one", "two", "three","four") # Character vector
+v2<- c ("one", "two", "three","four") # Character vector
 v3 <- c ("one ", "two ", "three ","four ") # Character vector
 v4<-c(TRUE,TRUE,FALSE,TRUE)
 1:10 # a string of continuous numbers with intervals =1
@@ -78,13 +79,36 @@ v4<-c(TRUE,TRUE,FALSE,TRUE)
 v1[1]
 v2[2]
 v3[2]
+
 ## what about getting first and third number from a vector ##
 v1[c(1,3)]
 ## what about getting first, second and  third number from a vector? ##
+v1[c(1,2,3)]
+
+## use logical vectors as indexes 
+v1==3
+v1[v1==3]
+v1>0
+v1[v1>0]
+
+v1<0
+v1[v1<0]
+
+v2[v2=="one"]
+v2[v2!="one"]
+
+v1[v1!=2]
+
+v1[v1<0 |v1>3] ### | stands for or 
+v1[v1<0 & v1>3] ### & stands for and
+
+v1[v1 %in% c(1,5)] ### %in%: include multiple values ## 
 
 ```
 
 #### Q: How to create a numeric vector with intervals =2 ?
+
+seq(1,10,3)
 
 #### Hint: use function "seq"
 
@@ -100,6 +124,7 @@ v21<-as.factor(v2)
 ```{r}
 Y<-matrix(1:20,nrow=5,ncol=4) # 5 x 4 numeric matrix
 Y[1,]
+Y[,4]
 Y[1,4]
 ```
 
@@ -123,7 +148,7 @@ colnames(D1)<-c("A","B") ### rename the column ##
 
 #### Q: can you rename the rows of your data frame to "M","N","X","Y"
 
-### List: Not a vector, can contain anything
+rownames(D1)\<-c("M","N","X","Y") \### List: Not a vector, can contain anything
 
 ```{r}
 AR1<-list(D1,D2)
@@ -183,7 +208,7 @@ dim(D1) ### number of rows and columns ##
 
 ```{r}
 getwd()
-setwd("/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R")
+setwd("/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R") ### put down the path of your directory 
 Galldata1<-read.csv("Barrie_BAR_2024.csv")
 ```
 
@@ -197,7 +222,10 @@ head(Galldata1) ### check the first six rows of the dataset
 
 ```{r}
 ## your code here
+length(Galldata1[,1])
+length(Galldata1[1,])
 
+dim(Galldata1)
 
 ```
 
@@ -205,7 +233,7 @@ head(Galldata1) ### check the first six rows of the dataset
 
 ```{r}
 ## your code here
-
+Galldata1[ ,c(6,14)]
 
 ```
 
@@ -214,14 +242,16 @@ head(Galldata1) ### check the first six rows of the dataset
 ```{r}
 ## your code here
 
+Galldata1[c(1,3),]
 
 ```
 
-#### Q4: get values of column 7, row 2
+#### Q4: get value of column 7, row 2
 
 ```{r}
 ## your code here
 
+Galldata1[2,7]
 
 ```
 
@@ -230,7 +260,10 @@ head(Galldata1) ### check the first six rows of the dataset
 ```{r}
 ## your code here
 
+str(Galldata1[,1])
+str(Galldata1[,2])
 
+str(Galldata1[,c(1,2,9)])
 ```
 
 #### Q6: rename the first column into "Content" ....
@@ -238,22 +271,23 @@ head(Galldata1) ### check the first six rows of the dataset
 ```{r}
 ## your code here
 
-
+colnames(Galldata1)[1]<-"Content"
 ```
 
 #### Q7: rename the second to 33 columns into "6","7","8","9" ....
 
 ```{r}
 ## your code here
-
+colnames(Galldata1)[2:29]<-6:33 ## numeric 
 
 ```
 
-#### Q8: rename species name in the first column into species initials: Eurosta for "EU"
+#### Q8: rename species name in the first column into species initials: "Eurosta" for "EU"
 
 ```{r}
 ## your code here
 
+Galldata1[1,1]<-"EU"
 
 ```
 
@@ -261,8 +295,21 @@ head(Galldata1) ### check the first six rows of the dataset
 
 ```{r}
 ## your code here
+Galldata1[4,1]
 
+Galldata1[Galldata1$Content=="M. convicta",]
 
+c(1:nrow(Galldata1))[Galldata1$Content=="M. convicta"]
+```
+
+#### Q9: get the row of species E. gigantea and M. convicta
+
+```{r}
+## your code here
+
+Galldata1[Galldata1$Content=="M. convicta"|Galldata1$Content=="E. gigantea",]
+
+Galldata1[Galldata1$Content %in% c("M. convicta","E. gigantea"),]
 ```
 
 ## for, repeat
@@ -276,13 +323,23 @@ head(Galldata1) ### check the first six rows of the dataset
 sum(Galldata1[1,2:15])
 
 ### how to get the total number of Eurosta for all gall sizes ###
-sum(Galldata1[1,2:length(Galldata1[1,])])
+ncols<-ncol(Galldata1)
 
+length(Galldata1[1,]) ## number of columns
+       
+sum(Galldata1[1,2:ncols])
+
+sum(Galldata1[1,-1])
+sum(Galldata1[2,2:ncols])
+sum(Galldata1[3,2:ncols])
 ## repeat the above step for each row ###
 TotalN<-c()
-for (i in 1:length(Galldata1[,1])){
+
+seq(1,8,2)
+
+for (i in 1:8){
   
-  TotalN[i]<-sum(Galldata1[i,2:length(Galldata1[1,])])
+  TotalN[i]<-sum(Galldata1[i,2:ncols])
   
 }
 ```
@@ -292,19 +349,22 @@ for (i in 1:length(Galldata1[,1])){
 ```{r}
 ### your code below 
 
+
+
 ```
 
 ### 2. Repeat
 
 ```{r}
 ### create a vector of value 1 for the total number of Eurosta for gall size 21
-rep(1,Galldata1[1,"X21"])
-length(rep(1,Galldata1[1,"X21"]))
+rep(1,Galldata1[1,"21"])
+length(rep(1,Galldata1[1,"21"]))
 
-rep(0,Galldata1[1,"X21"])
+rep(0,Galldata1[1,"21"])
 ```
 
 ### Q: convert the Galldata1 into a data format like below
+
 ![](datascreenshot.png)
 
 ```{r}
