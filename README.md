@@ -1,4 +1,4 @@
 # Data-analysis-in-R
-## dataset and scripts for exercise 
+## Dataset and Scripts for exercise 
 
-## You can find the Rmarkdown file named as Lecture*.Rmd ##
+### You can find the Rmarkdown file named as Lecture*.Rmd ##
