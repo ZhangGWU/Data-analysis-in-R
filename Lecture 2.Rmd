@@ -70,7 +70,7 @@ v1<-2
 
 ```{r}
 v1<-c(1,3,5,-2) ### numeric vector
-v2 <- c ("one", "two", "three","four") # Character vector
+v2<- c ("one", "two", "three","four") # Character vector
 v3 <- c ("one ", "two ", "three ","four ") # Character vector
 v4<-c(TRUE,TRUE,FALSE,TRUE)
 1:10 # a string of continuous numbers with intervals =1
@@ -81,6 +81,23 @@ v3[2]
 ## what about getting first and third number from a vector ##
 v1[c(1,3)]
 ## what about getting first, second and  third number from a vector? ##
+
+## use logical vectors as indexes 
+v1==3
+v1[v1==3]
+v1>0
+v1[v1>0]
+
+v1<0
+v1[v1<0]
+
+v2[v2=="one"]
+v2[v2!="one"]
+
+v1[v1<0 |v1>3] ### | stands for or 
+v1[v1<0 & v1>3] ### & stands for and
+
+v1[v1 %in% c(1,5)] ### %in%: include multiple values ## 
 
 ```
 
@@ -265,6 +282,14 @@ head(Galldata1) ### check the first six rows of the dataset
 
 ```
 
+#### Q9: get the row of species E. gigantae and M. convicta
+
+```{r}
+## your code here
+
+
+```
+
 ## for, repeat
 
 ### 1. Usage of for loop: total number of each species
@@ -312,3 +337,4 @@ rep(0,Galldata1[1,"X21"])
 
 
 ```
+
