@@ -387,6 +387,7 @@ getwd() # where does R save/retrieve files? </code></pre>
 ## [19] &quot;Lecture 2.Rmd&quot;                           
 ## [20] &quot;Lecture-2.html&quot;                          
 ## [21] &quot;Lecture-2.Rmd&quot;                           
+<<<<<<< HEAD
 ## [22] &quot;lecture2.RData&quot;                          
 ## [23] &quot;LICENSE&quot;                                 
 ## [24] &quot;README.md&quot;                               
@@ -401,6 +402,20 @@ ls() # What is in the current environment ?</code></pre>
 library(ggplot2) ### load a package ###</code></pre>
 <pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.3.1</code></pre>
 <pre class="r"><code>save.image(&quot;lecture2.RData&quot;)
+=======
+## [22] &quot;LICENSE&quot;                                 
+## [23] &quot;README.md&quot;                               
+## [24] &quot;test.html&quot;                               
+## [25] &quot;test.R&quot;                                  
+## [26] &quot;test.Rmd&quot;                                
+## [27] &quot;Your.RData&quot;</code></pre>
+<pre class="r"><code>setwd(&quot;/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R&quot;) # Set another place to save/retrieve files
+ls() # What is in the current environment ?</code></pre>
+<pre><code>## character(0)</code></pre>
+<pre class="r"><code>library(ggplot2) ### load a package ###</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code>save.image(&quot;Your.RData&quot;)
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 ?plot # Open the help file for function</code></pre>
 <pre><code>## Help on topic &#39;plot&#39; was found in the following packages:
 ## 
@@ -471,9 +486,14 @@ v4&lt;-c(TRUE,TRUE,FALSE,TRUE)
 v1[c(1,3)]</code></pre>
 <pre><code>## [1] 1 5</code></pre>
 <pre class="r"><code>## what about getting first, second and  third number from a vector? ##
+<<<<<<< HEAD
 v1[c(1,2,3)]</code></pre>
 <pre><code>## [1] 1 3 5</code></pre>
 <pre class="r"><code>## use logical vectors as indexes 
+=======
+
+## use logical vectors as indexes 
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 v1==3</code></pre>
 <pre><code>## [1] FALSE  TRUE FALSE FALSE</code></pre>
 <pre class="r"><code>v1[v1==3]</code></pre>
@@ -490,8 +510,11 @@ v1==3</code></pre>
 <pre><code>## [1] &quot;one&quot;</code></pre>
 <pre class="r"><code>v2[v2!=&quot;one&quot;]</code></pre>
 <pre><code>## [1] &quot;two&quot;   &quot;three&quot; &quot;four&quot;</code></pre>
+<<<<<<< HEAD
 <pre class="r"><code>v1[v1!=2]</code></pre>
 <pre><code>## [1]  1  3  5 -2</code></pre>
+=======
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 <pre class="r"><code>v1[v1&lt;0 |v1&gt;3] ### | stands for or </code></pre>
 <pre><code>## [1]  5 -2</code></pre>
 <pre class="r"><code>v1[v1&lt;0 &amp; v1&gt;3] ### &amp; stands for and</code></pre>
@@ -500,7 +523,10 @@ v1==3</code></pre>
 <pre><code>## [1] 1 5</code></pre>
 <div id="q-how-to-create-a-numeric-vector-with-intervals-2" class="section level4">
 <h4>Q: How to create a numeric vector with intervals =2 ?</h4>
+<<<<<<< HEAD
 <p>seq(1,10,3)</p>
+=======
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 </div>
 <div id="hint-use-function-seq" class="section level4">
 <h4>Hint: use function “seq”</h4>
@@ -516,8 +542,11 @@ v21&lt;-as.factor(v2)</code></pre>
 <pre class="r"><code>Y&lt;-matrix(1:20,nrow=5,ncol=4) # 5 x 4 numeric matrix
 Y[1,]</code></pre>
 <pre><code>## [1]  1  6 11 16</code></pre>
+<<<<<<< HEAD
 <pre class="r"><code>Y[,4]</code></pre>
 <pre><code>## [1] 16 17 18 19 20</code></pre>
+=======
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 <pre class="r"><code>Y[1,4]</code></pre>
 <pre><code>## [1] 16</code></pre>
 </div>
@@ -544,8 +573,15 @@ colnames(D1)</code></pre>
 <div id="q-can-you-rename-the-rows-of-your-data-frame-to-mnxy" class="section level4">
 <h4>Q: can you rename the rows of your data frame to
 “M”,“N”,“X”,“Y”</h4>
+<<<<<<< HEAD
 <p>rownames(D1)&lt;-c(“M”,“N”,“X”,“Y”) ### List: Not a vector, can
 contain anything</p>
+=======
+</div>
+</div>
+<div id="list-not-a-vector-can-contain-anything" class="section level3">
+<h3>List: Not a vector, can contain anything</h3>
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 <pre class="r"><code>AR1&lt;-list(D1,D2)
 AR1[[1]] ### first data frame ###</code></pre>
 <pre><code>##    A     B
@@ -557,7 +593,10 @@ AR1[[1]] ### first data frame ###</code></pre>
 <pre><code>## [1] &quot;one&quot;</code></pre>
 <pre class="r"><code>AR2&lt;-list(v1,D1)</code></pre>
 </div>
+<<<<<<< HEAD
 </div>
+=======
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 <div id="check-the-data-type" class="section level3">
 <h3>check the data type</h3>
 <pre class="r"><code>str(v1)</code></pre>
@@ -618,7 +657,11 @@ AR1[[1]] ### first data frame ###</code></pre>
 <h4>make sure your dataset is stored in your working directory</h4>
 <pre class="r"><code>getwd()</code></pre>
 <pre><code>## [1] &quot;/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R&quot;</code></pre>
+<<<<<<< HEAD
 <pre class="r"><code>setwd(&quot;/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R&quot;) ### put down the path of your directory 
+=======
+<pre class="r"><code>setwd(&quot;/Users/linyizhang/Desktop/Teaching/2024 fall Data analysis in R/Data-analysis-in-R&quot;)
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 Galldata1&lt;-read.csv(&quot;Barrie_BAR_2024.csv&quot;)</code></pre>
 </div>
 </div>
@@ -641,6 +684,7 @@ Galldata1&lt;-read.csv(&quot;Barrie_BAR_2024.csv&quot;)</code></pre>
 ## 6   0   0   0   1   0   1   0   0   0   0   0   0</code></pre>
 <div id="q1-count-the-number-of-rows-and-columns" class="section level4">
 <h4>Q1: count the number of rows and columns</h4>
+<<<<<<< HEAD
 <pre class="r"><code>## your code here
 length(Galldata1[,1])</code></pre>
 <pre><code>## [1] 8</code></pre>
@@ -745,6 +789,46 @@ Galldata1[Galldata1$Content==&quot;M. convicta&quot;|Galldata1$Content==&quot;E.
 ##   29 30 31 32 33
 ## 2  0  0  0  0  0
 ## 4  1  0  1  0  0</code></pre>
+=======
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q2-get-values-of-column-6-14" class="section level4">
+<h4>Q2: get values of column 6, 14</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q3-get-values-of-row-1-3" class="section level4">
+<h4>Q3: get values of row 1, 3</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q4-get-values-of-column-7-row-2" class="section level4">
+<h4>Q4: get values of column 7, row 2</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q5-whats-the-vector-type-of-the-column-129" class="section level4">
+<h4>Q5: what’s the vector type of the column 1,2,9?</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q6-rename-the-first-column-into-content-." class="section level4">
+<h4>Q6: rename the first column into “Content” ….</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q7-rename-the-second-to-33-columns-into-6789-." class="section level4">
+<h4>Q7: rename the second to 33 columns into “6”,“7”,“8”,“9” ….</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q8-rename-species-name-in-the-first-column-into-species-initials-eurosta-for-eu" class="section level4">
+<h4>Q8: rename species name in the first column into species initials:
+Eurosta for “EU”</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q9-get-the-row-of-species-m.-convicta" class="section level4">
+<h4>Q9: get the row of species M. convicta</h4>
+<pre class="r"><code>## your code here</code></pre>
+</div>
+<div id="q9-get-the-row-of-species-e.-gigantae-and-m.-convicta" class="section level4">
+<h4>Q9: get the row of species E. gigantae and M. convicta</h4>
+<pre class="r"><code>## your code here</code></pre>
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 </div>
 </div>
 </div>
@@ -758,6 +842,7 @@ Galldata1[Galldata1$Content==&quot;M. convicta&quot;|Galldata1$Content==&quot;E.
 sum(Galldata1[1,2:15])</code></pre>
 <pre><code>## [1] 8</code></pre>
 <pre class="r"><code>### how to get the total number of Eurosta for all gall sizes ###
+<<<<<<< HEAD
 ncols&lt;-ncol(Galldata1)
 
 length(Galldata1[1,]) ## number of columns</code></pre>
@@ -778,6 +863,15 @@ seq(1,8,2)</code></pre>
 <pre class="r"><code>for (i in 1:8){
   
   TotalN[i]&lt;-sum(Galldata1[i,2:ncols])
+=======
+sum(Galldata1[1,2:length(Galldata1[1,])])</code></pre>
+<pre><code>## [1] 103</code></pre>
+<pre class="r"><code>## repeat the above step for each row ###
+TotalN&lt;-c()
+for (i in 1:length(Galldata1[,1])){
+  
+  TotalN[i]&lt;-sum(Galldata1[i,2:length(Galldata1[1,])])
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
   
 }</code></pre>
 </div>
@@ -789,11 +883,19 @@ seq(1,8,2)</code></pre>
 <div id="repeat" class="section level3">
 <h3>2. Repeat</h3>
 <pre class="r"><code>### create a vector of value 1 for the total number of Eurosta for gall size 21
+<<<<<<< HEAD
 rep(1,Galldata1[1,&quot;21&quot;])</code></pre>
 <pre><code>##  [1] 1 1 1 1 1 1 1 1 1 1</code></pre>
 <pre class="r"><code>length(rep(1,Galldata1[1,&quot;21&quot;]))</code></pre>
 <pre><code>## [1] 10</code></pre>
 <pre class="r"><code>rep(0,Galldata1[1,&quot;21&quot;])</code></pre>
+=======
+rep(1,Galldata1[1,&quot;X21&quot;])</code></pre>
+<pre><code>##  [1] 1 1 1 1 1 1 1 1 1 1</code></pre>
+<pre class="r"><code>length(rep(1,Galldata1[1,&quot;X21&quot;]))</code></pre>
+<pre><code>## [1] 10</code></pre>
+<pre class="r"><code>rep(0,Galldata1[1,&quot;X21&quot;])</code></pre>
+>>>>>>> ddf374bf64ba5a2d1883477340d74af731096666
 <pre><code>##  [1] 0 0 0 0 0 0 0 0 0 0</code></pre>
 </div>
 <div id="q-convert-the-galldata1-into-a-data-format-like-below" class="section level3">
