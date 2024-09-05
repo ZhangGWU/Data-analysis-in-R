@@ -104,6 +104,23 @@ v1[v1<0 & v1>3] ### & stands for and
 
 v1[v1 %in% c(1,5)] ### %in%: include multiple values ## 
 
+## use logical vectors as indexes 
+v1==3
+v1[v1==3]
+v1>0
+v1[v1>0]
+
+v1<0
+v1[v1<0]
+
+v2[v2=="one"]
+v2[v2!="one"]
+
+v1[v1<0 |v1>3] ### | stands for or 
+v1[v1<0 & v1>3] ### & stands for and
+
+v1[v1 %in% c(1,5)] ### %in%: include multiple values ## 
+
 ```
 
 #### Q: How to create a numeric vector with intervals =2 ?
@@ -312,6 +329,14 @@ Galldata1[Galldata1$Content=="M. convicta"|Galldata1$Content=="E. gigantea",]
 Galldata1[Galldata1$Content %in% c("M. convicta","E. gigantea"),]
 ```
 
+#### Q9: get the row of species E. gigantae and M. convicta
+
+```{r}
+## your code here
+
+
+```
+
 ## for, repeat
 
 ### 1. Usage of for loop: total number of each species
@@ -372,3 +397,4 @@ rep(0,Galldata1[1,"21"])
 
 
 ```
+

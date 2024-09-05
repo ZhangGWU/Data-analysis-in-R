@@ -1,9 +1,4 @@
 # Data-analysis-in-R
-dataset and scripts for exercise 
+## Dataset and Scripts for exercise 
 
-## test test ##
-
-library(usethis)
-gitcreds::gitcreds_set()
-
-### test test test ###
+### You can find the Rmarkdown file named as Lecture*.Rmd ##
