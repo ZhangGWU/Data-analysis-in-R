@@ -1,0 +1,183 @@
+---
+title: "Lecture 6"
+author: "Zhang"
+date: "2024-10-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### reload the dataset from last time
+
+```{r}
+Alldatanew<-read.csv("Alldatanew.csv")
+head(Alldatanew)
+```
+
+## Is there a latitudinal gradient of gall sizes?
+
+> ### Last lecture we used the linear correlation between average gall size per site and the latitude of the site.
+
+```{r}
+library(plyr)
+Alldatanew1<-Alldatanew[Alldatanew$ELD==0,]
+gallsum<-ddply(Alldatanew1,c("Site","Year","Season","Latitude","longitude","Confidence"),summarize, TN=sum(N),Diam=mean(Diam),EU=sum(survival),GIG=sum(GIG),OBT=sum(OBT),MC=sum(MC),BP=sum(BP))
+
+Diam.lm<-lm(Diam~Latitude,data=gallsum)
+summary(Diam.lm)
+plot(Diam~Latitude,data=gallsum)
+abline(Diam.lm)
+```
+
+> ### Is there a quadratic (non-linear) relationship between gall size and latitude?
+
+```{r}
+Diam.lm2<-lm(Diam~poly(Latitude,2),data=gallsum)
+summary(Diam.lm2)
+
+plot(Diam~Latitude,data=gallsum)
+curve(predict(Diam.lm2,newdata=data.frame(Latitude=x)),add=TRUE)
+
+Diam.lm3<-lm(Diam~poly(Latitude,3),data=gallsum)
+summary(Diam.lm3)
+
+plot(Diam~Latitude,data=gallsum)
+curve(predict(Diam.lm3,newdata=data.frame(Latitude=x)),add=TRUE)
+
+```
+
+> ### Genomic data shows populatioins of Eurosta divided as East and West clade around Michigan. We want to incorporate the effect of genetic clades on gall sizes.
+
+```{r}
+plot(gallsum$Latitude,gallsum$longitude) ### divide populations as East and West along -90 in longitude. 
+
+### how to create a new column that assign each row of gall data into either "West" or "East" based on longitude cut off? 
+gallsum$Region[gallsum$longitude< -90]<-"West"
+gallsum$Region[gallsum$longitude> -90]<-"East"
+
+boxplot(Diam~Region,data=gallsum)
+```
+
+> ### include both region and latitude as factors
+
+```{r}
+Diam.lm4<-lm(Diam~Latitude+Region,data=gallsum)
+summary(Diam.lm4)
+
+### does region and latitude interact with each other to affect gall sizes? 
+## install.packages("sjPlot")
+library(sjPlot)
+## devtools::install_github("strengejacke/strengejacke")
+Diam.lm5<-lm(Diam~Latitude*Region,data=gallsum)
+summary(Diam.lm5)
+plot_model(Diam.lm5,type="pred",terms=c("Latitude","Region"))
+
+```
+
+> ### Which statistical model is better? -Model selection among linear models
+
+### The Akaike Information Criterion (AIC)
+
+-   AIC rewards goodness of fit, but it also includes a penalty that is an increasing function of the number of estimated parameters.
+
+-   AIC = 2k-2ln(L)
+
+> > L is the maximum value of the likelihood function for the model (goodness of fit)
+
+> > k is the number of estimated parameters in the model
+
+-   the lower the AIC value, the better the model
+
+```{r}
+AIC(Diam.lm,Diam.lm2,Diam.lm4,Diam.lm5)
+anova(Diam.lm,Diam.lm4,Diam.lm5)
+
+```
+
+> #### Using average gall size per site loses the individual gall data within each site, thus loses more statistical power
+
+### Alternative method: linear mixed model, allowing for a combination of fixed and random effects
+
+> -   Fixed effects: model parameters are fixed (non-random) quantities (e.g. Latitude). Fixed effects are the things you care about and want to estimate. You likely chose the factor levels for a specific reason or measured the variable because you are interested in the relationship it has to your response variable.
+
+> -   Random effects: model parameters are considered as random variables. A random effect is generally something that can be expected to have a nonsystematic, idiosyncratic, unpredictable, or “random” influence on your data.
+
+> -   Hierarchy between variables
+
+> > -   could be the random slope or the random intercept
+
+> #### Q: What is the mathmatical expression of linear mixed model using latitude as a fix effect, individual as a random effect on intercept
+
+> > Need to use Alldatanew with indivudal gall data again \> Q: How to create a new column that assign each row of gall data into either "West" or "East" based on longitude cut off?
+
+```{r}
+### your code here 
+
+```
+
+> ### Linear mixed model using lme4 package
+
+```{r}
+library(lme4)
+diam.lmm1<-lmer(Diam~Latitude+(1|Site),data=Alldatanew)
+
+```
+
+> > ### No p values in the model summary in linear mixed model, why?
+
+> 1.  the traditional, Fisher-style test of a null hypothesis is based on computing the probability of observing a test statistic as extreme or more extreme than the one actually observed, assuming that the null hypothesis is true. This probability is called the p-value. If the p-value is less than some cut-off, e.g. 0.01, then the null hypothesis is rejected.
+
+> 2.  in order to compute that p-value, we need to know the cumulative distribution function of the test statistic when the null hypothesis is true. In simple cases this is easy: for example, we use the t-distribution for the comparison of two normal means (with assumed equal variances etc).
+
+> 3.  in (many) hierarchical models the cumulative distribution function of the test statistic when the null hypothesis is true is simply not known. So, we can't compute the p-value.
+
+> > ### How to know the significance of the fixed effects?
+
+> > -   if your interested in accurately estimating the random effects, you should fit the model with REML whereas if you’re interested in estimating the fixed effects, you should fit the model with ML.
+
+```{r}
+diam.lmm0<-lmer(Diam~(1|Site),data=Alldatanew,REML = FALSE)
+diam.lmm1<-lmer(Diam~Latitude+(1|Site),data=Alldatanew,REML = FALSE)
+diam.lmm2<-lmer(Diam~Latitude+Region+(1|Site),data=Alldatanew,REML = FALSE)
+diam.lmm3<-lmer(Diam~Latitude*Region+(1|Site),data=Alldatanew,REML = FALSE)
+summary(diam.lmm1)
+summary(diam.lmm2)
+summary(diam.lmm3)
+
+anova(diam.lmm0,diam.lmm1,diam.lmm2,diam.lmm3)
+anova(diam.lmm1,diam.lmm2)
+```
+
+> > ### How to report the model results?
+
+> > > “… Geographical region affected the gall diameters (χ2(1)=5.38, p=0.020), galls in the West region are on average 0.99 ± 0.42 mm smaller than galls in the East …”
+
+> > > #### Q: how about the effect of latitude?
+
+> > > Your answers:
+
+### Model assumption checks in LMM
+
+> > 1.  Homoscedasticity: no relationship between residuals and fitted values
+
+```{r}
+par(mfrow=c(2,2))
+plot(diam.lmm2)
+```
+
+> > 2.  Normality of residuals
+
+```{r}
+qqnorm(residuals(diam.lmm2))
+```
+
+>> 3. check the influential sites to the model 
+>>> we can do leave-one-out diagnostics by removing one site at a time to refit the LMM model. 
+
+```{r}
+### get the model coefficient for fixed effect Latitude ###
+fixef(diam.lmm2)[2]
+
+```
