@@ -44,15 +44,7 @@ gallsum<-ddply(Alldatanew,c("Site","Year","Season","Latitude","longitude","Confi
 > ### Q2: How to test the relationship between the strength of predation and latitude?
 
 ```{r}
-gallsum$PRD<-gallsum$GIG+gallsum$OBT+gallsum$MC+gallsum$BP
 
-gallsum$PPRD<-gallsum$PRD/gallsum$TN
-hist(gallsum$PPRD)
-
-PRDlm1<-lm(PPRD~Latitude,data=gallsum)
-summary(PRDlm1)
-plot(PPRD~Latitude,data=gallsum)
-plot(PRDlm1)
 ```
 
 > ### Q3: What should we do when strength of predation is not normally distributed?
@@ -65,11 +57,7 @@ plot(PRDlm1)
 > > 2.  log for greater skew: log(x) for positively skewed data, log(max(x+1)-x) for negatively skewed data
 
 ```{r}
-hist(log(gallsum$PPRD))
 
-hist(sqrt(gallsum$PPRD))
-
-shapiro.test(sqrt(gallsum$PPRD))
 ```
 
 > > #### Issues with the non-normal distribution of the response variable in a linear model
