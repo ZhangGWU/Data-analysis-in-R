@@ -1,0 +1,174 @@
+---
+title: "Lecture 8"
+author: "Zhang"
+date: "2024-10-16"
+output: html_document
+---
+
+## Last lecture, we used GLM to explore the latitudinal trend of strength of predation
+
+```{r}
+Alldatanew<-read.csv("Alldatanew.csv")
+head(Alldatanew)
+library(lme4)
+library(plyr)
+gallsum<-ddply(Alldatanew,c("Site","Year","Season","Latitude","longitude","Confidence"),summarize, TN=sum(N),Diam=mean(Diam),EU=sum(survival),GIG=sum(GIG),OBT=sum(OBT),MC=sum(MC),BP=sum(BP),ELD=sum(ELD))
+
+gallsum$PRD<-gallsum$GIG+gallsum$OBT+gallsum$MC+gallsum$BP
+gallsum$PPRD<-gallsum$PRD/gallsum$TN
+```
+
+> Which distribution is the strength of predation?
+
+```{r}
+PPRD_glm1<-glm(PPRD~Latitude, family=binomial,data=gallsum,weights=TN)
+summary(PPRD_glm1)
+
+```
+
+> What is the link function for binomial distribution? Important for visualisation of the result
+
+```{r}
+plot(PPRD~Latitude,data=gallsum)
+abline(PPRD_glm1) ### not working for glm ###
+
+### need to get the predicted value of strength of predation from the model and plot it against Latitude 
+
+### generate a sequence of latitude that covers the range of latitudes in the dataset 
+Lat<-data.frame(Latitude=seq(min(gallsum$Latitude),
+                             max(gallsum$Latitude),by=0.1))
+### generate the predicted values from the sequence of latitude 
+PPRD<-predict(PPRD_glm1,newdata=Lat,type="link",se=TRUE)
+
+plot(Lat$Latitude,PPRD$fit) ### why? need to transform the predict value using logit link: y= ln(p/(1-p)) ###
+
+plot(PPRD~Latitude,data=gallsum)
+lines(Lat$Latitude,exp(PPRD$fit)/(1+exp(PPRD$fit)))
+
+### add the 95% confidence bands for the regression ##
+
+lines(Lat$Latitude,exp(PPRD$fit+1.96*PPRD$se.fit)/(1+exp(PPRD$fit+1.96*PPRD$se.fit)),lty=2)
+lines(Lat$Latitude,exp(PPRD$fit-1.96*PPRD$se.fit)/(1+exp(PPRD$fit-1.96*PPRD$se.fit)),lty=2)
+```
+
+## What is the assumption of GLM? Is it the same assumptions as LM?
+
+```{r}
+par(mfrow=c(2,2))
+plot(PPRD_glm1)
+summary(PPRD_glm1)
+
+```
+
+> This is an question related to how we estimate intercepts and slopes
+
+### Let's try a simulated relationship between x and y, y is obeying possion distribution
+
+> We are assuming the slope of 0.03, the intercept of 0.05 E(y)= mu, ln(mu) = 0.03 \*x + 0.05
+
+```{r}
+#### generate a sequence of x ###
+
+### generate a sequence of corresponding values based on x ###
+
+### generate a sequence of mu based on x ###
+
+### generate a sequence of y based on x ###
+
+### plot y against x 
+
+```
+
+> ### In real life, we only have y and x, not slope or intercept
+> > a dataset with count data
+
+```{r}
+OV<-read.csv("OV2017new.csv")
+head(OV)
+### does number of oviposition (OV) differ between immigrants and residents 
+
+OV.glm1<-glm(No.OV~Host*type*Leaf.area,data=OV,family=poisson)
+summary(OV.glm1)
+```
+
+> > Q: What is the method to estimate slope and intercept in linear regression
+
+> ### Can we use the same method to estimate slope and intercept in GLM?
+
+> > > 1.  Does the response variable follow a normal distribution?
+> > > 2.  Is the variance of the response variables the same across different x?
+
+### In GLM, maximum likehood estimation is used to estimate intercepts and slopes using observed data
+
+> maximum likehood estimation is to maximise the join likelihood of observing all the data as a function of the unknown regression parameters. For each observed data $y_{i}$, the probablity of getting $y_{i}$ given the mean $\mu_{i}$ is the likelihood $L_{i}$ for $y_{i}$, the joint likelihood for observed data $L$($y_{1}$,$y_{2}$,...$y_{n}$) = $L_{1}$ \* $L_{2}$\*...$L_{n}$
+
+### Model selection for GLM: AIC comparison ###
+
+```{r}
+OV.glm1<-glm(No.OV~Host*type*Leaf.area,data=OV,family=poisson)
+summary(OV.glm1)
+
+OV.glm2<-glm(No.OV~Host*type+Leaf.area,data=OV,family=poisson)
+summary(OV.glm2)
+
+OV.glm3<-glm(No.OV~Host+type+Leaf.area,data=OV,family=poisson)
+
+summary(OV.glm3)
+
+anova(OV.glm1,OV.glm2,OV.glm3)
+
+```
+
+### Assumption for GLM
+
+> Possion distribution assumes variance is equal to the mean
+> Binomial distribution assumes variance = n*p*(1-p), mean = n*p
+
+### Overdispersion means variance is larger than the mean
+> #### What causes overdispersion? 
+
+>> model misspecification: missing covariates or interactions, outliers, non-linear effects, wrong link function, too many zeros, clustering of observations, or variation is larger than the mean. 
+
+> #### How to check overdispersion?
+
+1.  Take residual deviancce/ degrees of freedom, and compare it with 1. If the ratio is about 1, no overdispersion. If the ratio is larger than 1, evidence for overdispersion.
+
+2.  Thumb of rules, if the ratio is larger than 1.5, we need to correct for overdispersion. If the ratio is larger than 15, need to consider other distribution models (negative binomial GLM or zero inflated models).
+
+> #### How count for overdispersion?
+>
+> > adding a overdispersal parameter $\Theta$, so that var(Y) = $\Theta$ \* $\mu$
+
+```{r}
+
+OV.glm5 <- glm(No.OV~Host+type+Leaf.area,data=OV,family=quasipoisson)
+summary(OV.glm5)
+
+summary(PPRD_glm1)
+PPRD_glm2<-glm(PPRD~Latitude, family=quasibinomial,data=gallsum,weights=TN)
+```
+> > if the ratio is > 15, for possion distribution, use negative binomial
+
+### Question: What's the relationship between the probability of predation and Latitude?
+
+### Intro to GLMM: generalized linear mixed model
+```{r}
+library(glmmTMB)
+### include a column that mark the presence or absence of predation 
+
+
+PDglmm1<-glmmTMB(PD~x1+x2+x3,family=binomial,data=Alldatanew)
+summary(PDglmm1)
+```
+> #### model diagnostics 
+
+```{r}
+library(DHARMa)
+PDglmm1_simres <- simulateResiduals(PDglmm1)
+
+plot(PDglmm1_simres)
+```
+
+#### Question: What's the relationship between the probability of parasitoid predation and gall diameters?
+
+#### Question: What's the relationship between the probability of bird predation and gall diameters?
