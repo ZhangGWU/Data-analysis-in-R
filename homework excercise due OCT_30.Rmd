@@ -1,0 +1,65 @@
+---
+title: "Homework exercise"
+author: "Linyi Zhang"
+date: "Oct, 24, 2024"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+> **How to generate an html file from an Rmarkdown file** 
+
+1. Open a Rmarkdown file 
+2. After you are done with the coding in Rmarkdown file, click on knit -> knit to HTML.
+
+**Question 1: What's the relationship between the probability of parasitoid predation and latitude?**
+
+> ###### Please give the R code for running the linear regression model, the model output, your description of the results, and the visualization of the linear regression between probability of parasitoid predation and latitude (scatterplot+regression line).
+
+```{r}
+# your code here #
+
+```
+
+---
+### your description of your model result here
+
+Probability of parasitoid predation is positively/negatively/not significantly correlated with the latitude (z =, p = ).
+
+---
+
+**Question2:What's the relationship between the probability of bird predation and latitude?**
+
+> ###### Please give the R code for running the linear regression model, the model output, your description of the results, and the visualization of the linear regression between probability of parasitoid predation and latitude (scatterplot+regression line).
+
+```{r}
+# your code here #
+```
+
+---
+### your description of your model result here
+Probability of bird predation is positively/negatively/not significantly correlated with the latitude (z =, p = ). 
+---
+
+**Question 3: What's the relationship between the strength of directional selection on gall size and latitude? In other word, is there a latitudinal gradient of strength of selection?**
+
+> ###### The strength of directional selection on gall size is quantified as i= (mean gall size of survivors - mean gall size of all galls)/standard deviation of gall sizes.
+> ###### When you do the strength of selection on gall size analysis, please make sure to remove the galls that had early larva death (ELD), and galls that were collected in the summer.
+
+> ###### 1.  calculate the strength of directional selection on gall size for each site.
+
+```{r}
+### your code here
+```
+
+> ###### 2.  test the relationship between the strength of directional selection on gall size and latitude.
+
+```{r}
+### your code here
+```
+
+> ###### 3.  visualization of the relationship between the strength of directional selection on gall size and latitude.
+
+```{r}
+### your code here
+```
