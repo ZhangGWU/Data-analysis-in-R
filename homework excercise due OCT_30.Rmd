@@ -14,17 +14,35 @@ output:
 
 **Question 1: What's the relationship between the probability of parasitoid predation and latitude?**
 
+
 > ###### Please give the R code for running the linear regression model, the model output, your description of the results, and the visualization of the linear regression between probability of parasitoid predation and latitude (scatterplot+regression line).
 
 ```{r}
 # your code here #
+PDglmm<-glmmTMB(PD~Latitude+Diam+(1|Site),data=Alldatanew2,family=binomial)
+summary(PDglmm) ### conducting a GLMM ###
 
+#### make a plot to visualize the relationship between latitude and the probability of parasitoid predation 
+
+### 1. make a sequence of predicting values- latitude
+Lat<-data.frame(Latitude=seq(min(Alldatanew2$Latitude),
+                       max(Alldatanew2$Latitude),by=0.2))
+
+Lat$Diam<-mean(Alldatanew2$Diam) ### for gall size, use average gall size 
+### 2. generate response variable (probability of parasitoid predation) based on the predicting variables
+Lat$PPRD<-predict(PDglmm,newdata=Lat,type="response",se=TRUE,re.form=NA)$fit
+
+### 3. make a scatterplot with latitude as x axis and probability of parasitoid predation as the y axis
+ggplot()+
+  geom_point(data=Alldatanew2,aes(x=Latitude,y=PD))+
+  geom_line(data=Lat,aes(x=Latitude,y=PPRD),color="blue")+labs(x="Latitude",y="Probability of parasitoid predation")
+  
 ```
 
 ---
 ### your description of your model result here
 
-Probability of parasitoid predation is positively/negatively/not significantly correlated with the latitude (z =, p = ).
+Probability of parasitoid predation is not significantly correlated with the latitude (z=-1.589, p = 0.11202).
 
 ---
 
