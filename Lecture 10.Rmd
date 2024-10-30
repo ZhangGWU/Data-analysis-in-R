@@ -1,0 +1,145 @@
+---
+title: "Lecture 10-Bayesian inferences"
+author: "Zhang"
+date: "2024-11-06"
+output: html_document
+---
+
+### What is Bayesian inference?
+
+> What is conditional probabilities:
+
+> $Pr(A|B)$:
+
+> $Pr(B|A)$:
+
+### Screening for vampirism
+
+![](vampire.jpg)
+
+> The chance of being positive given you are a vampire $Pr(+|vampire)=0.9$ The chance of being positive given you are a human $Pr(+|human)=0.05$ Vampire constitutes 0.1% of the total population
+
+### Q: If the test is positive, what is the probability that this person is a vampire $Pr(vampire|+)=$?
+
+### Difference between frequentist and Bayesian statistics
+
+> Frequentist: $Pr(data|hypothesis)$
+
+> Bayesian stats: $Pr(hypothesis|data) =$ $\frac{Pr(data|hypothesis)*Pr(hypothesis)}{Pr(data)}$
+
+> > hypothesis corresponding to $\theta$
+
+$Pr(\theta|data)$= $\frac{Pr(data|\theta)*Pr(\theta)}{Pr(data)}$
+
+> Pr($\theta$\|data): posterior distribution, what you know after having seen the data
+
+> Pr(data\|$\theta$): likelihood
+
+> Pr($\theta$): prior distribution, what you know before seeing the data
+
+> $Pr(data)$= $$\int Pr(data|θ)Pr(θ)dθ $$
+
+#### Q: how does the proportion of vampire in the population change the estimate of $Pr(vampire|+)$
+
+```{r}
+### your code here
+
+### reset the proportion of vampire
+
+### estimate of Pr(vampire|+) 
+
+```
+
+### A test of MCMC: markov chain Monte Carlo
+
+> Why MCMC: it is hard to calculate probability of data with multiple dimensions (multiple parameters)
+
+> A Markov Chain: a mathematical process that undergoes transitions from one state to another, the future state depends only on the current state of the process and not the past
+
+> A Monte Carlo process refers to a simulation that samples many random values from a posterior distribution of interest
+
+> How to do random walks: a distribution is repeatedly sampled in small steps; is independent of the move before, and so is memoryless. including metropolis algorithm, gibbs sampling, etc.
+
+A simple example of random walk algorithm:
+
+A politician is campaigning in 7 districts, one adjacent to the other. She wants to spend time in each district, but due to financial constraints, would like to spend time in each district proportional to the number of likely voters in that district. The only information available is the number of voters in the district she is currently in, and in those that are directly adjacent to it on either side. Each day, she must decide whether to campaign in the same district, move to the adjacent eastern district, or move to the adjacent western. On any given day, here’s how the decision is made whether to move or not:
+
+1.  Flip a coin. Heads to move east, tails to move west.
+
+2.  If the district indicated by the coin (east or west) has more voters than the present district, move there.
+
+3.  If the district indicated by the coin has fewer likely voters, make the decision based on a probability calculation:
+
+4.  calculate the probability of moving as the ratio of the number of likely voters in the proposed district, to the number of voters in the current district:
+
+Pr[move] = voters in indicated district/voters in present district
+
+Take a random sample between 0 and 1.
+
+If the probability of moving is larger than the value of random sample , move. Otherwise, stay put.
+
+This “random walk” will, after many repeated sampling steps, be such that the time spent in each district is proportional to the number of voters in a district. The MCMC process “converges” to produce a distribution that is a mirror image of the actual distribution.
+
+#### **Key features from an MCMC process**:
+
+**Burn-in**: A random point was chosen to be the first sample. Note that in the distribution produced by the Metropolis algorithm, there is an increased density of samples around the starting district 4. It may take some time for the “walk” to move away from the initial starting point. If the target distribution has a sparser density in that region, the estimates produced from the MCMC will be biased. To mitigate this, an initial portion of a Markov chain sample is discarded so that the effect of initial values on inference is minimized. This is referred to as the “burn-in” period.
+
+**Number of iterations**: number of repeated steps
+
+**Convergence**: MCMC reaches a stable set of samples from a stationary posterior distribution
+
+```{r}
+library(brms)
+library(glmmTMB)
+library(ggplot2)
+Alldatanew<-read.csv("Alldatanew.csv")
+Alldatanew2<-Alldatanew[Alldatanew$Season=="Spring",]
+Alldatanew2<-Alldatanew2[Alldatanew2$Occupant!="ELD",]
+
+Surglmm1<-glmmTMB(survival~Latitude+Diam+(1|Site),family=binomial,data=Alldatanew2)
+summary(Surglmm1)
+
+Sur.brms <- brm(survival ~ Latitude+Diam+(1|Site), 
+                  family = bernoulli("logit"), 
+                  data = Alldatanew2,
+                  chains = 2, # nb of chains
+                  iter = 5000, # nb of iterations, including burnin
+                  warmup = 1000, # burnin
+                  thin = 2)
+Sur.brms
+plot(Sur.brms)
+
+hypothesis(Sur.brms, 'Diam > 0')
+hypothesis(Sur.brms, 'Latitude > 0')
+prior_summary(Sur.brms)
+
+
+nlprior<-c(set_prior("normal(0,2)",class="b"),
+set_prior("normal(0,2)",class="b",coef="Latitude"),
+set_prior("normal(0,2)",class="b",coef="Diam"))
+
+Sur.brms2 <- brm(survival ~ Latitude+Diam+(1|Site), 
+                  family = bernoulli("logit"), 
+                  data = Alldatanew2,
+                 prior=nlprior,
+                  chains = 2, # nb of chains
+                  iter = 5000, # nb of iterations, including burnin
+                  warmup = 1000, # burnin
+                  thin = 2)
+
+prior_summary(Sur.brms2)
+
+
+Sur.brms3 <- brm(survival ~ Diam+(1|Site), 
+                  family = bernoulli("logit"), 
+                  data = Alldatanew2,
+                  chains = 2, # nb of chains
+                  iter = 5000, # nb of iterations, including burnin
+                  warmup = 1000, # burnin
+                  thin = 2)
+
+### model comparison, use loo package 
+library(loo)
+loo(Sur.brms2,Sur.brms3)
+
+```
